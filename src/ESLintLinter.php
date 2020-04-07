@@ -174,6 +174,11 @@ final class ESLintLinter extends ArcanistExternalLinter {
         $message->setDescription($offense['message']);
         $message->setLine($offense['line']);
         $message->setChar($offense['column']);
+        if (array_key_exists('fix', $offense)) {
+          $message->setSeverity(ArcanistLintSeverity::SEVERITY_AUTOFIX);
+          $message->setReplacementText($offense['fix']['text']);
+          $message->setOriginalText(substr($file['source'], $offense['fix']['range'][0], $offense['fix']['range'][1] - $offense['fix']['range'][0]));
+        }
         $message->setCode($this->getLinterName());
         $messages[] = $message;
       }
